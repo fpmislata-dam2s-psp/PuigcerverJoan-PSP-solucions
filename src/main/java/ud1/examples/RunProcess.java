@@ -12,9 +12,9 @@ public class RunProcess {
         try {
             Process process = pb.start();
             int codiRetorn = process.waitFor();
-            System.out.println("L'execució de "+ Arrays.toString(program) +" retorna "+ codiRetorn);
+            System.out.println("L<execució de "+ Arrays.toString(program) +" retorna "+ codiRetorn);
         } catch (IOException ex) {
-            System.err.println("Excepció d'E/S.");
+            System.err.println("Excepció d<E/S.");
             System.out.println(ex.getMessage());
             System.exit(-1);
         } catch (InterruptedException ex) {
