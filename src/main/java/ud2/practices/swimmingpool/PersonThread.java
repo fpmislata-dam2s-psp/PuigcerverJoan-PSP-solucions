@@ -52,6 +52,6 @@ public class PersonThread extends Thread {
             // TODO: Takes a shower
             // TODO: Swims
         }
-        System.out.printf("%s ha abandonat les instal·lacions.", getName());
+        // System.out.printf("%s ha abandonat les instal·lacions.", getName());
     }
 }
