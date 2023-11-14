@@ -27,23 +27,25 @@ public class Task {
         this.status = status;
     }
 
-    public void work(){
+    public void work() throws InterruptedException {
         Thread current = Thread.currentThread();
-        System.out.printf("%s: Starting task %s...\n", current.getName(), this.name);
+        System.out.printf("%s: Working on task %s...\n", current.getName(), this.name);
 
         // TODO: Do the task (sleep DURATION miliseconds)
+        Thread.sleep(getDuration());
 
         setStatus(TaskStatus.TESTING);
         System.out.printf("%s: Finished task %s (%d).\n", current.getName(), this.name, this.duration);
     }
 
-    public void test(){
+    public void test() throws InterruptedException {
         Thread current = Thread.currentThread();
-        System.out.printf("%s: Starting task %s...\n", current.getName(), this.name);
+        System.out.printf("%s: Testing task %s...\n", current.getName(), this.name);
 
         // TODO: Do the task (sleep DURATION / 2 miliseconds)
+        Thread.sleep(getDuration() / 2);
 
         setStatus(TaskStatus.FINISHED);
-        System.out.printf("%s: Finished task %s (%d).\n", current.getName(), this.name, this.duration);
+        System.out.printf("%s: Finished task %s (%d).\n", current.getName(), this.name, this.duration / 2);
     }
 }

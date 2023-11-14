@@ -14,6 +14,8 @@ public class Team {
         this.name = name;
         employees = new ArrayList<>();
         unfinishedTasks = new ArrayList<>();
+        testingTasks = new ArrayList<>();
+        finishedTasks = new ArrayList<>();
     }
 
     public void addEmployee(EmployeeThread employee) {
@@ -33,7 +35,7 @@ public class Team {
         return name;
     }
 
-    public Task getNextTask(){
+    public synchronized Task getNextTask(){
         /**
          * TODO:
          * Get next Task from unfinishedTasks. If all unfinishedTaks are done,
@@ -41,14 +43,22 @@ public class Team {
          * The task must be deleted from the list when retrieved.
          * If all Tasks are done and tested, return null.
          */
-
-        return null;
+        if (!unfinishedTasks.isEmpty())
+            return unfinishedTasks.remove(0);
+        else if (!testingTasks.isEmpty())
+            return testingTasks.remove(0);
+        else
+            return null;
     }
 
-    public void addTestingTask(Task t){
+    public synchronized boolean existPendingTasks(){
+        return !unfinishedTasks.isEmpty() || !testingTasks.isEmpty();
+    }
+
+    public synchronized void addTestingTask(Task t){
         testingTasks.add(t);
     }
-    public void addFinishedTask(Task t){
+    public synchronized void addFinishedTask(Task t){
         finishedTasks.add(t);
     }
 }

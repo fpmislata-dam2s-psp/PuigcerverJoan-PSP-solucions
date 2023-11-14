@@ -30,7 +30,23 @@ public class EmployeeThread extends Thread{
          * If the task is null:
          *  - All tasks are done. Exit.
          */
+        try {
+            while (true){
+                Task t = team.getNextTask();
+                if (t == null) {
+                    break;
+                } else if (t.status() == TaskStatus.UNFINISHED){
+                    t.work();
+                    team.addTestingTask(t);
+                } else if (t.status() == TaskStatus.TESTING) {
+                    t.test();
+                    team.addFinishedTask(t);
+                }
+            }
+            System.out.printf("%s: Ha realitzat totes les tasques assignades.\n", this.getName());
+        } catch (InterruptedException e) {
+            System.out.printf("%s: Ha segut interromput.\n", this.getName());
+        }
 
-        System.out.printf("%s: Ha realitzat totes les tasques assignades.\n", this.getName());
     }
 }

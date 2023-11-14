@@ -27,6 +27,37 @@ public class CollectiveTasks {
         database.addEmployee(new EmployeeThread("Mar"));
 
         // TODO: Start all the teams and wait for them to finish their tasks
+        for (EmployeeThread employeeThread : frontend.getEmployees()){
+            employeeThread.start();
+        }
+        for (EmployeeThread employeeThread : backend.getEmployees()){
+            employeeThread.start();
+        }
+        for (EmployeeThread employeeThread : database.getEmployees()){
+            employeeThread.start();
+        }
+
+        for (EmployeeThread employeeThread : frontend.getEmployees()){
+            try {
+                employeeThread.join();
+            } catch (InterruptedException e) {
+                System.err.printf("%s ha segut interromput.\n", employeeThread.getName());
+            }
+        }
+        for (EmployeeThread employeeThread : backend.getEmployees()){
+            try {
+                employeeThread.join();
+            } catch (InterruptedException e) {
+                System.err.printf("%s ha segut interromput.\n", employeeThread.getName());
+            }
+        }
+        for (EmployeeThread employeeThread : database.getEmployees()){
+            try {
+                employeeThread.join();
+            } catch (InterruptedException e) {
+                System.err.printf("%s ha segut interromput.\n", employeeThread.getName());
+            }
+        }
 
         System.out.println("Projecte acabat! Tots els equips han acabat les tasques assignades.");
     }
