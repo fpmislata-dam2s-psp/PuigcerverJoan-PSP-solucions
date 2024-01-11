@@ -1,4 +1,4 @@
-package ud3.exercises.tictactoe.server;
+package ud3.exercises.tictactoe.solution.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -26,17 +26,18 @@ public class TicTacToeServer extends Thread {
         this.interrupt();
     }
 
-    /**
-     * TODO: Execució del servidor.
-     * <p>
-     * El servidor accepta les connexions dels clients.
-     * Quan dos jugadors es connecten, els emparella per començar una partida.
-     */
     @Override
     public void run() {
         while (running){
             try {
-                throw new IOException("Not yet implemented.");
+                Socket client = server.accept();
+                System.out.println("Nova connexió acceptada.");
+
+                nextGame.addPlayer(client);
+                if (nextGame.enoughPlayers()){
+                    nextGame.start();
+                    nextGame = new TicTacToeGame(games.size());
+                }
             } catch (IOException e) {
                 System.err.println("Error while accepting new connection");
                 System.err.println(e.getMessage());

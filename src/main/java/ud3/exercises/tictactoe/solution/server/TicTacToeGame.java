@@ -1,8 +1,8 @@
-package ud3.exercises.tictactoe.server;
+package ud3.exercises.tictactoe.solution.server;
 
-import ud3.exercises.tictactoe.models.Board;
-import ud3.exercises.tictactoe.models.BoardChoice;
-import ud3.exercises.tictactoe.models.TicTacToeMessageType;
+import ud3.exercises.tictactoe.solution.models.Board;
+import ud3.exercises.tictactoe.solution.models.BoardChoice;
+import ud3.exercises.tictactoe.solution.models.TicTacToeMessageType;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static ud3.exercises.tictactoe.models.TicTacToeMessageType.*;
+import static ud3.exercises.tictactoe.solution.models.TicTacToeMessageType.*;
 
 public class TicTacToeGame extends Thread {
     private final int id;
@@ -56,10 +56,8 @@ public class TicTacToeGame extends Thread {
         }
     }
 
-    /**
-     * TODO: Send the choice to all players, so they update the board.
-     */
     public void updateClientBoards(BoardChoice choice) throws IOException {
+        sendGlobalMessage(UPDATE_BOARD, "", choice);
     }
 
     public void changeTurn(){
@@ -72,24 +70,47 @@ public class TicTacToeGame extends Thread {
         }
     }
 
-    /**
-     * Server side of TicTacToe game.
-     * <p>
-     * TODO: The server should keep track of:
-     * - Comunication with both connected players.
-     * - The TicTacToe Board. It should be updated given
-     *      the players choices.
-     * - It's a turn based game.
-     * - Winner/Loser or draw.
-     */
     @Override
     public void run(){
-        // TODO
-        /*
         try {
+            System.out.printf("Game %d has started!\n", id);
+            currentPlayer = ThreadLocalRandom.current().nextInt(0, 2);
+
+            sendGlobalMessage(START_GAME, "Game has started!");
+
+            getCurrentPlayer().sendMessage(WAIT_TURN);
+            changeTurn();
+            getCurrentPlayer().sendMessage(INFO, "You are the first to move!");
+            getCurrentPlayer().sendMessage(START_TURN);
+
+            while (!finished){
+                BoardChoice choice = getCurrentPlayer().getChoice();
+                while (!board.isValid(choice)){
+                    getCurrentPlayer().sendMessage(INVALID_CHOICE, "The position is not valid.");
+                    choice = getCurrentPlayer().getChoice();
+                }
+                choice.setPlayer(currentPlayer + 1);
+                board.updateBoard(choice);
+                updateClientBoards(choice);
+
+                board.checkFinished(choice);
+                if(board.isFinished()){
+                    if (board.getWinner() == 0)
+                        sendGlobalMessage(INFO, "It's a draw.");
+                    else
+                        sendGlobalMessage(INFO, String.format("Player %d is the winner!", board.getWinner()));
+                    sendGlobalMessage(END_GAME);
+                    finished = true;
+                }
+
+                getCurrentPlayer().sendMessage(WAIT_TURN);
+                changeTurn();
+                getCurrentPlayer().sendMessage(START_TURN);
+            }
+
+            close();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println(e.getMessage());
         }
-        */
     }
 }
