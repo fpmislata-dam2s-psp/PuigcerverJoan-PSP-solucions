@@ -1,5 +1,7 @@
 package ud4.examples.jsse;
 
+import ud4.examples.Config;
+
 import javax.net.ssl.SSLSocketFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +14,7 @@ import java.util.Properties;
 public class SimpleJsseClient {
     public static void main(String[] args) {
         try {
-            Properties config = SimpleJsseServer.getConfig();
+            Properties config = Config.getConfig("application.properties");
             String host = config.getProperty("ud4.examples.jsse.host");
             int port = Integer.parseInt(config.getProperty("ud4.examples.jsse.port"));
             String keyStorePassword = config.getProperty("ud4.examples.jsse.keystore.passwd");

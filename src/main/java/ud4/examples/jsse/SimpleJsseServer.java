@@ -1,5 +1,7 @@
 package ud4.examples.jsse;
 
+import ud4.examples.Config;
+
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
@@ -9,15 +11,9 @@ import java.util.Properties;
 
 public class SimpleJsseServer {
 
-    public static Properties getConfig() throws IOException {
-        Properties properties = new Properties();
-        properties.load(new FileInputStream(new File("config.properties")));
-        return properties;
-    }
-
     public static void main(String[] args) {
         try {
-            Properties config = getConfig();
+            Properties config = Config.getConfig("application.properties");
             int port = Integer.parseInt(config.getProperty("ud4.examples.jsse.port"));
             System.out.println("Creant el Socket servidor en el port: " + port);
 

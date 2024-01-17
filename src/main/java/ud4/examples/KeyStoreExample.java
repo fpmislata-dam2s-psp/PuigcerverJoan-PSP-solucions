@@ -28,19 +28,13 @@ public class KeyStoreExample {
         System.out.println(info);
     }
 
-    public static Properties getConfig() throws IOException {
-        Properties properties = new Properties();
-        properties.load(new FileInputStream(new File("config.properties")));
-        return properties;
-    }
-
     public static void main(String[] args) {
         try {
             /*
              * Guardar contrasenyes en el codi NO ÉS UNA BONA PRÀCTICA,
              * cal utilitzar variables d'entorn o un fitxer de configuració.
              */
-            Properties config = getConfig();
+            Properties config = Config.getConfig("application.properties");
             String keyStorePassword = config.getProperty("ud4.examples.keystore.passwd");
             KeyStore keyStore = loadKeyStore("files/ud4/example_keystore.jks", keyStorePassword);
 
@@ -50,32 +44,39 @@ public class KeyStoreExample {
             for(String alias : aliases)
                 System.out.println("- " + alias);
 
-            String alias = aliases.get(0);
             /*
              El certificat ha segut creat prèviament amb la comanda:
-             keytool -genkey -keyalg RSA -alias example -keypass keypassword -keystore keystore.jks -storepass password -validity 360 -keysize 2048
+             ```
+            keytool -genkey -keyalg RSA \
+                -alias example \
+                -keystore files/ud4/example_keystore.jks \
+                -validiry 360 \
+                -storepass 123456 -keysize 2048 \
+                -dname "CN=Example, O=CIPFP Mislata, OU=PSP-DAM2S, L=Mislata, ST=València, C=ES"
+             ```
 
              Per poder llegir informació sobre el subjecte del certificat,
              necessitem utilitzar l'objecte X509Certificate.
              */
-            Certificate exampleCertificate = keyStore.getCertificate(alias);
-            printCertificateInfo(exampleCertificate);
+            for (String alias : aliases) {
+                Certificate certificate = keyStore.getCertificate(alias);
+                printCertificateInfo(certificate);
 
-            // Clau pública del certificat
-            PublicKey examplePublic = exampleCertificate.getPublicKey();
+                // Clau pública del certificat
+                PublicKey examplePublic = certificate.getPublicKey();
 
-            // Clau privada
-            PrivateKey examplePrivate = (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
+                // Clau privada
+                PrivateKey examplePrivate = (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
 
-            String message = "This is a secret information.";
-            System.out.printf("Message: %s\n", message);
+                String message = "This is a secret information.";
+                System.out.printf("Message: %s\n", message);
 
-            String encrypted = RSA.encrypt(examplePublic, message);
-            System.out.printf("Encrypted: %s\n", encrypted);
+                String encrypted = RSA.encrypt(examplePublic, message);
+                System.out.printf("Encrypted: %s\n", encrypted);
 
-            String decrypted = RSA.decrypt(examplePrivate, encrypted);
-            System.out.printf("Decrypted: %s\n", decrypted);
-
+                String decrypted = RSA.decrypt(examplePrivate, encrypted);
+                System.out.printf("Decrypted: %s\n", decrypted);
+            }
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
