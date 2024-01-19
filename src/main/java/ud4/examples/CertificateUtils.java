@@ -96,10 +96,10 @@ public class CertificateUtils {
                 String decrypted = RSA.decrypt(examplePrivate, encrypted);
                 System.out.printf("Decrypted: %s\n", decrypted);
 
-                String signed = signText(examplePrivate, message);
-                System.out.printf("Signed: %s\n", signed);
+                String signautre = signText(examplePrivate, message);
+                System.out.printf("Signed: %s\n", signautre);
 
-                System.out.println("Signature verification: " + verifySignature(examplePublic, message, signed));
+                System.out.println("Signature verification: " + verifySignature(examplePublic, message, signautre));
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
