@@ -7,6 +7,7 @@ import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Properties;
 
 public class SimpleJsseServer {
@@ -26,7 +27,7 @@ public class SimpleJsseServer {
 
             System.out.println("Esperant connexions...");
             // Aquest Socket es de tipus SSLSocket
-            SSLSocket connexio = (SSLSocket) server.accept();
+            Socket connexio = server.accept();
             System.out.println("Connectat amb el client!");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connexio.getInputStream()));
