@@ -23,10 +23,9 @@ public class CertificateUtils {
         return ks;
     }
 
-    public static void printCertificateInfo(Certificate certificate){
+    public static String getCertificateInfo(Certificate certificate){
         X509Certificate cert = (X509Certificate) certificate;
-        String info = cert.getSubjectX500Principal().getName();
-        System.out.println(info);
+        return cert.getSubjectX500Principal().getName();
     }
 
     public static String signText(PrivateKey privateKey, String text) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
@@ -79,7 +78,7 @@ public class CertificateUtils {
              */
             for (String alias : aliases) {
                 Certificate certificate = keyStore.getCertificate(alias);
-                printCertificateInfo(certificate);
+                System.out.println(getCertificateInfo(certificate));
 
                 // Clau pública del certificat
                 PublicKey examplePublic = certificate.getPublicKey();

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -45,38 +46,28 @@ public class AES {
         return sKey;
     }
 
-    public static String encrypt(SecretKey key, String str){
-        try {
-            // Decode the UTF-8 String into byte[] and encrypt it
-            byte[] data = encrypt(key, str.getBytes(StandardCharsets.UTF_8));
-            // Encode the encrypted data into base64
-            return Base64.getEncoder().encodeToString(data);
-        } catch (Exception ex){
-            System.err.println("Error xifrant les dades: " + ex);
-        }
-        return null;
+    public static String encrypt(SecretKey key, String str) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        // Decode the UTF-8 String into byte[] and encrypt it
+        byte[] data = encrypt(key, str.getBytes(StandardCharsets.UTF_8));
+        // Encode the encrypted data into base64
+        return Base64.getEncoder().encodeToString(data);
     }
-    public static String decrypt(SecretKey key, String str){
-        try {
-            // Decode the base64 encrypted string to a byte[]
-            byte[] data = Base64.getDecoder().decode(str);
-            // Decrypyt the byte[] data
-            byte[] decrypted = decrypt(key, data);
-            // Encode the decrypted data in a String
-            return new String(decrypted);
-        } catch (Exception ex){
-            System.err.println("Error desxifrant les dades: " + ex);
-        }
-        return null;
+    public static String decrypt(SecretKey key, String str) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        // Decode the base64 encrypted string to a byte[]
+        byte[] data = Base64.getDecoder().decode(str);
+        // Decrypyt the byte[] data
+        byte[] decrypted = decrypt(key, data);
+        // Encode the decrypted data in a String
+        return new String(decrypted);
     }
 
-    public static byte[] encrypt(SecretKey key, byte[] data) throws Exception {
+    public static byte[] encrypt(SecretKey key, byte[] data) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return aes(key, data, Cipher.ENCRYPT_MODE);
     }
-    public static byte[] decrypt(SecretKey key, byte[] data) throws Exception {
+    public static byte[] decrypt(SecretKey key, byte[] data) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return aes(key, data, Cipher.DECRYPT_MODE);
     }
-    private static byte[] aes(SecretKey key, byte[] data, int opmode) throws Exception {
+    private static byte[] aes(SecretKey key, byte[] data, int opmode) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(opmode, key);
         return cipher.doFinal(data);
@@ -101,7 +92,7 @@ public class AES {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         String message = "Aquest és un missatge super secret";
         ArrayList<SecretKey> keys = new ArrayList<>();
 
