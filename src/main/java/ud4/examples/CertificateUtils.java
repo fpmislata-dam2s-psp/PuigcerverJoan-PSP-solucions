@@ -28,6 +28,10 @@ public class CertificateUtils {
         return cert.getSubjectX500Principal().getName();
     }
 
+    public static void printCertificateInfo(Certificate certificate){
+        System.out.println(getCertificateInfo(certificate));
+    }
+
     public static String signText(PrivateKey privateKey, String text) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(privateKey);
