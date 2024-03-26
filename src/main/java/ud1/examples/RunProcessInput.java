@@ -10,24 +10,20 @@ import java.io.PrintWriter;
 
 public class RunProcessInput {
     public static void main (String[] args) {
-        if(args.length == 0) {
-            System.err.println("Cal especificar programa.");
-            System.exit(-1);
-        }
-
-        ProcessBuilder pb = new ProcessBuilder(args);
+        String[] program = {"wsl", "tr", "a", "A"};
+        ProcessBuilder pb = new ProcessBuilder(program);
         try {
-            Process process = pb.start();
-
             // Objecte per poder llegir l'entrada estàndard del programa pare
             Scanner in = new Scanner(System.in).useLocale(Locale.US);
+
+            Process process = pb.start();
 
             // Objecte per poder escriure a l'entrada estàndard del procés fill
             PrintWriter stdin = new PrintWriter(process.getOutputStream());
 
             System.out.println("Stdin:");
             String line;
-            while( (line = in.nextLine()).length() > 0 )
+            while(!(line = in.nextLine()).isEmpty())
                 stdin.println(line);
 
             // Quan acabem de introduir dades, cal tancar el stream
@@ -38,7 +34,7 @@ public class RunProcessInput {
             BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
             int codiRetorn = process.waitFor();
-            System.out.println("L'execució de "+ Arrays.toString(args) +" ha acabat amb el codi: "+ codiRetorn);
+            System.out.println("L'execució de "+ Arrays.toString(program) +" ha acabat amb el codi: "+ codiRetorn);
 
             System.out.println("Stdout:");
             while ((line = stdout.readLine()) != null)

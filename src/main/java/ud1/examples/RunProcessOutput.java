@@ -7,12 +7,8 @@ import java.io.InputStreamReader;
 
 public class RunProcessOutput {
     public static void main (String[] args) {
-        if(args.length == 0) {
-            System.err.println("Cal especificar programa.");
-            System.exit(-1);
-        }
-
-        ProcessBuilder pb = new ProcessBuilder(args);
+        String[] program = {"wsl", "echo", "Hola que tal"};
+        ProcessBuilder pb = new ProcessBuilder(program);
         try {
             Process process = pb.start();
             // Objectes per poder llegir l'eixida estàndard i l'error
@@ -20,7 +16,7 @@ public class RunProcessOutput {
             BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
             int codiRetorn = process.waitFor();
-            System.out.println("L'execució de "+ Arrays.toString(args) +" ha acabat amb el codi: "+ codiRetorn);
+            System.out.println("L'execució de "+ Arrays.toString(program) +" ha acabat amb el codi: "+ codiRetorn);
 
             String line;
             System.out.println("Stdout:");
