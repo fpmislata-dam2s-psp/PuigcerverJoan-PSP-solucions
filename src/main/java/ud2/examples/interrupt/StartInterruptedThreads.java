@@ -16,9 +16,9 @@ public class StartInterruptedThreads {
         thread3.start();
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(2000);
             thread1.interrupt();
-            Thread.sleep(500);
+            Thread.sleep(1000);
             thread2.interrupt();
             Thread.sleep(500);
             thread3.interrupt();

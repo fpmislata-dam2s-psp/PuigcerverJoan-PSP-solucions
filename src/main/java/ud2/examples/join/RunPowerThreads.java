@@ -17,6 +17,7 @@ public class RunPowerThreads extends Thread {
         for (PowerThread t :  powerThreads) {
             try {
                 t.join(); // Esperem a que tots els threads acaben
+                System.out.printf("Resultat del fil %s: %d\n", t.getName(), t.getPower());
             } catch(Exception e){
                 e.printStackTrace();
             }

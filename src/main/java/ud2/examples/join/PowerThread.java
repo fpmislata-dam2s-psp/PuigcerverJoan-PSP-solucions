@@ -1,8 +1,8 @@
 package ud2.examples.join;
 
 public class PowerThread extends Thread {
-    private int base;
-    private int exponent;
+    private final int base;
+    private final int exponent;
     private int power;
 
     public PowerThread(int base, int exponent){
@@ -24,9 +24,8 @@ public class PowerThread extends Thread {
             for (int i = 0; i < exponent; i++) {
                 result *= base;
                 Thread.sleep(100);
-                System.out.printf("%s - Pas %d de %d: %d ^ %d = %d\n",
+                System.out.printf("%s: %d ^ %d = %d\n",
                         Thread.currentThread().getName(),
-                        i + 1, exponent,
                         base, i + 1, result
                 );
             }
