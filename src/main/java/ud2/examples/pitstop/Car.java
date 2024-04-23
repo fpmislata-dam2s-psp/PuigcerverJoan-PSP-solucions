@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Car {
-    private Tire frontLeftTire;
-    private Tire frontRightTire;
-    private Tire backLeftTire;
-    private Tire backRightTire;
-    private List<Tire> tires;
+    private final Tire frontLeftTire;
+    private final Tire frontRightTire;
+    private final Tire backLeftTire;
+    private final Tire backRightTire;
+    private final List<Tire> tires;
 
     private boolean raised;
 
@@ -40,16 +40,30 @@ public class Car {
         return backRightTire;
     }
 
+    public void drive(int km){
+        for(Tire t : tires)
+            t.decreaseKilometers(km);
+    }
+
     public synchronized void raise() throws InterruptedException {
         Thread.sleep(500);
         raised = true;
-        notifyAll();
+
+        synchronized (this) {
+            notifyAll();
+        }
     }
-    public synchronized void release() throws InterruptedException {
-        while(!readyToRelease()) wait();
+    public void release() throws InterruptedException {
+        synchronized (this) {
+            while(!readyToRelease()) wait();
+        }
+
         Thread.sleep(500);
         raised = false;
-        notifyAll();
+
+        synchronized (this) {
+            notifyAll();
+        }
     }
     public boolean readyToRelease(){
         for(Tire t : tires){
@@ -58,10 +72,16 @@ public class Car {
         }
         return true;
     }
-    public synchronized void replaceTire(Tire t) throws InterruptedException{
-        while(!raised) wait();
-        Thread.sleep(ThreadLocalRandom.current().nextInt(500, 1000));
+    public void replaceTire(Tire t) throws InterruptedException{
+        synchronized (this) {
+            while (!raised) wait();
+        }
+
+        Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 3000));
         t.replace();
-        notifyAll();
+
+        synchronized (this) {
+            notifyAll();
+        }
     }
 }

@@ -7,6 +7,7 @@ public class StudentThread extends Thread {
     private final Classroom classroom;
 
     public StudentThread(String name, Classroom classroom) {
+        super.setName(name);
         this.name = name;
         this.classroom = classroom;
     }
@@ -19,7 +20,7 @@ public class StudentThread extends Thread {
             int sleepTime = ThreadLocalRandom.current().nextInt(2000, 5000);
             System.out.printf("%s is sitting for %.2f seconds\n", name, sleepTime / 1000.0);
             Thread.sleep(sleepTime);
-            classroom.emptySeat();
+            classroom.releaseSeat();
             System.out.printf("%s has left the classroom\n", name);
         } catch (InterruptedException e) {
             System.out.printf("%s has been interrupted\n", name);

@@ -2,7 +2,7 @@ package ud2.examples.pitstop;
 
 public class Tire {
     private int remainingKilometers;
-    private String name;
+    private final String name;
 
     public Tire(String name) {
         this.name = name;
@@ -15,6 +15,10 @@ public class Tire {
 
     public int getRemainingKilometers() {
         return remainingKilometers;
+    }
+
+    public void decreaseKilometers(int km){
+        this.remainingKilometers -= km;
     }
 
     @Override

@@ -2,31 +2,42 @@ package ud2.examples.semaphore;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 public class Classroom {
-    private final Semaphore seatSemaphore;
+    private final MySemaphore seatSemaphore;
+    private final int totalNumberSeats;
+    private int availableNumberSeats;
 
     public Classroom(int numberSeats) {
-        this.seatSemaphore = new Semaphore(numberSeats);
+        this.totalNumberSeats = numberSeats;
+        this.availableNumberSeats = numberSeats;
+        this.seatSemaphore = new MySemaphore(numberSeats);
     }
 
-    public void takeSeat() throws InterruptedException {
+    public synchronized void takeSeat() throws InterruptedException {
         seatSemaphore.acquire();
+        this.availableNumberSeats--;
+        System.out.printf("%s has taken a seat. Available seats %d/%d\n", Thread.currentThread().getName(), availableNumberSeats, totalNumberSeats);
     }
 
-    public void emptySeat() {
+    public void releaseSeat() {
         seatSemaphore.release();
+        this.availableNumberSeats++;
+        System.out.printf("%s has released a seat. Available seats %d/%d\n", Thread.currentThread().getName(), availableNumberSeats, totalNumberSeats);
     }
 
-    public static void main(String[] args) {
-        Classroom classroom = new Classroom(10);
+    public static void main(String[] args) throws InterruptedException {
+        Classroom classroom = new Classroom(2);
 
         List<StudentThread> studentThreads = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             StudentThread studentThread = new StudentThread("Student" + i, classroom);
             studentThreads.add(studentThread);
             studentThread.start();
+        }
+
+        for(StudentThread st : studentThreads){
+            st.join();
         }
     }
 }

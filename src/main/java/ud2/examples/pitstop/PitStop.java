@@ -6,6 +6,8 @@ import java.util.List;
 public class PitStop {
     public static void main(String[] args) {
         Car car = new Car();
+        car.drive(50);
+
         List<Mechanic> mechanics = new ArrayList<>();
         mechanics.add(new RaiseMechanic(car));
         mechanics.add(new TireMechanic(car, car.getFrontLeftTire()));
