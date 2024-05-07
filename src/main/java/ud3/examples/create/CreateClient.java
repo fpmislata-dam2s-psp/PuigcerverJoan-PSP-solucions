@@ -12,7 +12,7 @@ public class CreateClient {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             // Es pot utilitzar l'opció autoflush
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
             String missatge = "Aquest missatge ha segut enviat des del client.";
             out.println(missatge);

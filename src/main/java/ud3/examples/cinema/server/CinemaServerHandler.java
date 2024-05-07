@@ -56,6 +56,7 @@ public class CinemaServerHandler extends Thread {
             // Obtenim objectes del tipus Request del client fins que aquest es desconnecte.
             Request req;
             while((req = (Request) objIn.readObject()) != null){
+                System.out.println(req);
                 if (req.getType() == RequestType.POST){
                     // Si la petició és del tipus POST
                     // Recuperem la pel·licula de la petició

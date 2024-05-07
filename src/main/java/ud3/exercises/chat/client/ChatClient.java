@@ -15,7 +15,7 @@ public class ChatClient {
         this.scanner = new Scanner(System.in);
         this.socket = new Socket(host, port);
         this.out = new PrintWriter(socket.getOutputStream(), true);
-        this.listener = new ChatListener(socket, this);
+        this.listener = new ChatListener(socket.getInputStream());
     }
 
     public void identify(){

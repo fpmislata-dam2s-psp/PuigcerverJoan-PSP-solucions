@@ -48,6 +48,7 @@ public class MessagingClient {
      * @throws IOException
      */
     public void sendRequest(Request request) throws IOException {
+        System.out.println("--> " + request);
         objOut.writeObject(request);
     }
 

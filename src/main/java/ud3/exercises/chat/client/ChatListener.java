@@ -2,19 +2,16 @@ package ud3.exercises.chat.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ChatListener extends Thread {
 
-    private final ChatClient client;
-    private final Socket socket;
     private final BufferedReader in;
 
-    public ChatListener(Socket socket, ChatClient client) throws IOException {
-        this.client = client;
-        this.socket = socket;
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    public ChatListener(InputStream inputStream) throws IOException {
+        in = new BufferedReader(new InputStreamReader(inputStream));
     }
 
     @Override
@@ -25,8 +22,6 @@ public class ChatListener extends Thread {
                 System.out.println(line);
             }
         } catch (IOException ignored ){
-        } finally {
-            this.client.close();
         }
     }
 }

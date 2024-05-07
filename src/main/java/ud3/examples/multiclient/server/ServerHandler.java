@@ -44,7 +44,8 @@ public class ServerHandler extends Thread {
     @Override
     public void run() {
         try {
-            setNom(in.readLine());
+            String nom = in.readLine();
+            setNom(nom);
             System.out.printf("%s s'ha identificat.\n", getNom());
 
             // Quan un client es desconecta, l'operació readLine() retorna null

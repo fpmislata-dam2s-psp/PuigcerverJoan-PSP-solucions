@@ -43,7 +43,7 @@ public class ChatHandler extends Thread {
             while((message = in.readLine()) != null){
                 String messageWithName = String.format("%s: %s", getNom(), message);
                 System.out.println(messageWithName);
-                server.sendMessage(this, messageWithName);
+                server.sendMessage(messageWithName);
             }
             System.out.printf("%s has disconnected.\n", getNom());
             socket.close();

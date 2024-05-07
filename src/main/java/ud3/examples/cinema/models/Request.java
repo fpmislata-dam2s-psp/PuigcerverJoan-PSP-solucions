@@ -68,4 +68,13 @@ public class Request implements Serializable {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "type=" + type +
+                ", object=" + object +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

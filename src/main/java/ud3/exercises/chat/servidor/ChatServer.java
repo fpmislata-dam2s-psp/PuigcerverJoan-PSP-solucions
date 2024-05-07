@@ -28,11 +28,16 @@ public class ChatServer extends Thread {
         clients.remove(client);
     }
 
-    public void sendMessage(ChatHandler sender, String msg){
+    public void sendMessage(String msg){
         for(ChatHandler client : clients) {
-            if (client != sender)
-                client.sendMessage(msg);
+            client.sendMessage(msg);
         }
+    }
+
+    public void sendMessage(String alias, String msg){
+        clients.stream()
+                .filter(client -> !client.getNom().equals(alias))
+                .forEach(client -> client.sendMessage(msg));
     }
 
     @Override

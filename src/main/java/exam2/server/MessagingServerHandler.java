@@ -41,6 +41,7 @@ public class MessagingServerHandler extends Thread {
      * @throws IOException
      */
     public void sendRequest(Request request) throws IOException {
+        System.out.printf("--> %s: %s\n", alias, request);
         objOut.writeObject(request);
     }
 
@@ -52,7 +53,9 @@ public class MessagingServerHandler extends Thread {
      */
     public Request readRequest() throws IOException, ClassNotFoundException {
         // TODO
-        return (Request) objIn.readObject();
+        Request r = (Request) objIn.readObject();
+        System.out.printf("<-- %s: %s\n", alias, r);
+        return r;
     }
 
     /**
@@ -63,7 +66,6 @@ public class MessagingServerHandler extends Thread {
         try {
             Request request;
             while((request = readRequest()) != null){
-                System.out.println(request);
                 if (request.getType() == RequestType.SEND){
                     // TODO: Acció del servidor a les respostes del tipus SEND
                     MessagingServerHandler receiver = server.getClientByAlias(request.getAlias());
@@ -85,7 +87,7 @@ public class MessagingServerHandler extends Thread {
                         setAlias(request.getAlias());
                         sendRequest(new Request(RequestType.SUCCESS, "", "Alias canviat correctament."));
                     } else {
-                        sendRequest(new Request(RequestType.ERROR, "", "Ja existeix un client amb aquest error."));
+                        sendRequest(new Request(RequestType.ERROR, "", "Ja existeix un client amb aquest alias."));
                     }
                 }
                 else if (request.getType() == RequestType.LIST){

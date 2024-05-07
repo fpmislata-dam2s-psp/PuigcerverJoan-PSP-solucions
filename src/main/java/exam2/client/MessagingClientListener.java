@@ -30,7 +30,9 @@ public class MessagingClientListener extends Thread {
      */
     public Request readRequest() throws IOException, ClassNotFoundException {
         // TODO
-        return (Request) objIn.readObject();
+        Request r = (Request) objIn.readObject();
+        System.out.println("<-- " + r);
+        return r;
     }
 
     // TODO: Reb missatges
@@ -39,7 +41,6 @@ public class MessagingClientListener extends Thread {
         try {
             Request request;
             while((request = readRequest()) != null){
-                System.out.println(request);
                 if (request.getType() == RequestType.SEND){
                     // TODO: Acció del client a les respostes del tipus SEND
                     System.out.printf("%s: %s\n", request.getAlias(), request.getMessage());

@@ -5,8 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-public class MulticlientServer extends Thread {
+public class MultiClientServer extends Thread {
     private final ServerSocket server;
     private final List<ServerHandler> clients;
     private boolean running;
@@ -17,7 +18,7 @@ public class MulticlientServer extends Thread {
      * @param port Port on escoltarà el servidor
      * @throws IOException Excepcions del constructor ServerSocket
      */
-    public MulticlientServer(int port) throws IOException {
+    public MultiClientServer(int port) throws IOException {
         server = new ServerSocket(port);
         clients = new ArrayList<>();
         running = true;
@@ -63,5 +64,20 @@ public class MulticlientServer extends Thread {
                 System.err.println(e.getMessage());
             }
         }
+    }
+
+    public static void main(String[] args) {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            MultiClientServer server = new MultiClientServer(1234);
+            server.start();
+
+            scanner.nextLine();
+
+            server.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
