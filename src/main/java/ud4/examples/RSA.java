@@ -30,10 +30,12 @@ public class RSA {
 
     public static String encrypt(PublicKey key, String str){
         try {
-            // Decode the UTF-8 String into byte[] and encrypt it
-            byte[] data = encrypt(key, str.getBytes(StandardCharsets.UTF_8));
+            // Decode the UTF-8 String into byte[]
+            byte[] data = str.getBytes(StandardCharsets.UTF_8);
+            // Encrypt the data
+            byte[] encrypted = encrypt(key, data);
             // Encode the encrypted data into base64
-            return Base64.getEncoder().encodeToString(data);
+            return Base64.getEncoder().encodeToString(encrypted);
         } catch (Exception ex){
             System.err.println("Error xifrant les dades: " + ex);
         }
@@ -124,14 +126,16 @@ public class RSA {
         KeyPair keys = null;
         try {
             keys = generateKeyPair(4096);
+            PublicKey publicKey = keys.getPublic();
+            PrivateKey privateKey = keys.getPrivate();
 
-            System.out.printf("Public key: %s\n", Base64.getEncoder().encodeToString(keys.getPublic().getEncoded()));
-            System.out.printf("Private key: %s\n", Base64.getEncoder().encodeToString(keys.getPrivate().getEncoded()));
+            System.out.printf("Public key: %s\n", Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+            System.out.printf("Private key: %s\n", Base64.getEncoder().encodeToString(privateKey.getEncoded()));
 
             System.out.printf("Message: %s\n", message);
-            String encrypted = encrypt(keys.getPublic(), message);
+            String encrypted = encrypt(publicKey, message);
             System.out.printf("Encrypted message: %s\n", encrypted);
-            String decrypted = decrypt(keys.getPrivate(), encrypted);
+            String decrypted = decrypt(privateKey, encrypted);
             System.out.printf("Decrypted message: %s\n", decrypted);
             System.out.println();
         } catch (Exception e) {

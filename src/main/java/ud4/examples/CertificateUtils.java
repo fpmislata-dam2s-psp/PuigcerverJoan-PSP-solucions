@@ -33,21 +33,21 @@ public class CertificateUtils {
     }
 
     public static String signText(PrivateKey privateKey, String text) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature signature = Signature.getInstance("SHA256withRSA");
-        signature.initSign(privateKey);
-        signature.update(text.getBytes());
-        byte[] signatureBytes = signature.sign();
+        Signature signatureInstance = Signature.getInstance("SHA256withRSA");
+        signatureInstance.initSign(privateKey);
+        signatureInstance.update(text.getBytes());
+        byte[] signatureBytes = signatureInstance.sign();
         return Base64.getEncoder().encodeToString(signatureBytes);
     }
 
-    public static boolean verifySignature(PublicKey publicKey, String text, String signed) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature signature = Signature.getInstance("SHA256withRSA");
-        signature.initVerify(publicKey);
-        signature.update(text.getBytes());
+    public static boolean verifySignature(PublicKey publicKey, String text, String signature) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signatureInstance = Signature.getInstance("SHA256withRSA");
+        signatureInstance.initVerify(publicKey);
+        signatureInstance.update(text.getBytes());
 
-        byte[] signatureBytes = Base64.getDecoder().decode(signed);
+        byte[] signatureBytes = Base64.getDecoder().decode(signature);
 
-        return signature.verify(signatureBytes);
+        return signatureInstance.verify(signatureBytes);
     }
 
     public static void main(String[] args) {

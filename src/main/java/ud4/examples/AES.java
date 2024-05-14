@@ -15,7 +15,7 @@ import java.util.Base64;
 
 public class AES {
 
-    public static SecretKey keygenKeyGeneration(int keySize) {
+    public static SecretKey generateRandomKey(int keySize) {
         SecretKey sKey = null;
         if ((keySize == 128)||(keySize == 192)||(keySize == 256)) {
             try {
@@ -30,7 +30,7 @@ public class AES {
         return sKey;
     }
 
-    public static SecretKey passwordKeyGeneration(String password, int keySize) {
+    public static SecretKey generateKeyByPassword(String password, int keySize) {
         SecretKey sKey = null;
         if ((keySize == 128)||(keySize == 192)||(keySize == 256)) {
             try {
@@ -47,10 +47,12 @@ public class AES {
     }
 
     public static String encrypt(SecretKey key, String str) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        // Decode the UTF-8 String into byte[] and encrypt it
-        byte[] data = encrypt(key, str.getBytes(StandardCharsets.UTF_8));
+        // Decode the UTF-8 String into byte[]
+        byte[] data = str.getBytes(StandardCharsets.UTF_8);
+        // Encrypt the byte[] data
+        byte[] encrypted = encrypt(key, data);
         // Encode the encrypted data into base64
-        return Base64.getEncoder().encodeToString(data);
+        return Base64.getEncoder().encodeToString(encrypted);
     }
     public static String decrypt(SecretKey key, String str) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         // Decode the base64 encrypted string to a byte[]
@@ -61,9 +63,22 @@ public class AES {
         return new String(decrypted);
     }
 
+    /**
+     * Encrypts the data using the key
+     * @param key The key to use
+     * @param data The data to encrypt
+     * @return The encrypted data
+     */
     public static byte[] encrypt(SecretKey key, byte[] data) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return aes(key, data, Cipher.ENCRYPT_MODE);
     }
+
+    /**
+     * Decrypts the encrypted data using the key
+     * @param key The key to use
+     * @param data The encrypted data
+     * @return The decrypted data
+     */
     public static byte[] decrypt(SecretKey key, byte[] data) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return aes(key, data, Cipher.DECRYPT_MODE);
     }
@@ -99,10 +114,10 @@ public class AES {
         String password = "veryDifficultPassword";
         int keySize = 256;
 
-        keys.add(passwordKeyGeneration(password, keySize));
+        keys.add(generateKeyByPassword(password, keySize));
         System.out.printf("Key generated with password: %s\n", password);
 
-        keys.add(keygenKeyGeneration(keySize));
+        keys.add(generateRandomKey(keySize));
 
         for (SecretKey key : keys) {
             System.out.printf("Key: %s\n", Base64.getEncoder().encodeToString(key.getEncoded()));

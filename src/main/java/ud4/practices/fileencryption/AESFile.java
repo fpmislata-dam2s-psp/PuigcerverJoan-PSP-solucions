@@ -18,7 +18,7 @@ public class AESFile {
 
     public AESFile(String path, String password) {
         this.path = path;
-        this.key = AES.passwordKeyGeneration(password, 256);
+        this.key = AES.generateKeyByPassword(password, 256);
     }
 
     public String read() throws IOException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
