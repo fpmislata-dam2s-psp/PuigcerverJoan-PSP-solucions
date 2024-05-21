@@ -21,11 +21,6 @@ public class LyricsPlayer {
         return lines.size();
     }
 
-    public synchronized void addLine(String line){
-        lines.add(line);
-        notify();
-    }
-
     public void setEnd(boolean end) {
         this.end = end;
     }
@@ -37,23 +32,13 @@ public class LyricsPlayer {
         return i < lines.size();
     }
 
-    public void playLine(int i) throws InterruptedException {
-        String[] line;
-
-        synchronized (this){
-            while(!isLineAvailable(i)) wait();
-            line = lines.get(i).split(" ");
-        }
-
-        for (int j = 0; j < line.length; j++) {
-            Thread.sleep(500);
-            if(j == 0)
-                System.out.printf("%d: ", i);
-            else
-                System.out.print(" ");
-            System.out.print(line[j]);
-        }
-        System.out.println();
+    public synchronized String getLine(int i) throws InterruptedException {
+        while(!isLineAvailable(i)) wait();
+        return lines.get(i);
+    }
+    public synchronized void addLine(String line){
+        lines.add(line);
+        notify();
     }
 
     public void start(){
