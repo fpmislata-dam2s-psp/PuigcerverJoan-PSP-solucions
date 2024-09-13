@@ -12,6 +12,7 @@ public class RunProcess {
         try {
             // Inicia el procés fill
             Process process = pb.start();
+            System.out.printf("S'ha iniciat el procés: %s\n", Arrays.toString(program));
             // El procés Java (pare) Espera a que el procés fill finalitze
             int codiRetorn = process.waitFor();
             System.out.println("L'execució de "+ Arrays.toString(program) +" retorna "+ codiRetorn);
