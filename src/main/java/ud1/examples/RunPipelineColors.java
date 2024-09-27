@@ -5,17 +5,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class RunPipelineColors {
     public static void main (String[] args) {
 
         ArrayList<ProcessBuilder> programs = new ArrayList<>();
-        programs.add(new ProcessBuilder("powershell", "Get-Content", "files\\ud1\\colors.txt"));
-        programs.add(new ProcessBuilder("powershell", "sort"));
-        // programs.add(new ProcessBuilder("wsl", "uniq", "-c"));
-        // programs.add(new ProcessBuilder("wsl", "sort", "-r"));
-        // programs.add(new ProcessBuilder("wsl", "head", "-3"));
+        programs.add(new ProcessBuilder("powershell", "type", "files/ud1/colors.txt"));
+        programs.add(new ProcessBuilder("wsl", "sort"));
+        programs.add(new ProcessBuilder("wsl", "uniq", "-c"));
+        programs.add(new ProcessBuilder("wsl", "sort", "-r", "-n"));
+        programs.add(new ProcessBuilder("wsl", "head", "-3"));
 
         try {
             List<Process> processes = ProcessBuilder.startPipeline(programs);
@@ -23,7 +22,7 @@ public class RunPipelineColors {
             for(Process p : processes)
                 p.waitFor();
 
-            Process last = processes.get(processes.size() - 1);
+            Process last = processes.getLast(); // .get(processes.size() - 1);
             BufferedReader stdout = new BufferedReader(new InputStreamReader(last.getInputStream()));
 
             String line;
