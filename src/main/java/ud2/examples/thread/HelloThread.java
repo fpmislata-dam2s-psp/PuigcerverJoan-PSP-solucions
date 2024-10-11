@@ -18,7 +18,9 @@ class HelloThread extends Thread {
                 );
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            System.out.printf("El fil %s ha segut interromput\n",
+                    Thread.currentThread().getName()
+            );
         }
     }
 }
