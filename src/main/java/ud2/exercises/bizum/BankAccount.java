@@ -7,26 +7,24 @@ public class BankAccount {
         this.balance = balance;
     }
 
-    public double getBalance(){
+    public synchronized double getBalance(){
         return this.balance;
     }
 
-    public void deposit(double amount){
+    public synchronized void deposit(double amount){
         this.balance += amount;
     }
 
-    public boolean withdraw(double amount){
+    public synchronized boolean withdraw(double amount){
         if (amount > balance)
             return false;
         this.balance -= amount;
         return true;
     }
 
-    public boolean bizum(BankAccount other, double amount){
+    public void bizum(BankAccount other, double amount){
         if(withdraw(amount)) {
             other.deposit(amount);
-            return true;
         }
-        return false;
     }
 }
