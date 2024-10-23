@@ -10,7 +10,7 @@ public class RunPipelineColors {
     public static void main (String[] args) {
 
         ArrayList<ProcessBuilder> programs = new ArrayList<>();
-        programs.add(new ProcessBuilder("powershell", "type", "files/ud1/colors.txt"));
+        programs.add(new ProcessBuilder("wsl", "cat", "files/ud1/colors.txt"));
         programs.add(new ProcessBuilder("wsl", "sort"));
         programs.add(new ProcessBuilder("wsl", "uniq", "-c"));
         programs.add(new ProcessBuilder("wsl", "sort", "-r", "-n"));

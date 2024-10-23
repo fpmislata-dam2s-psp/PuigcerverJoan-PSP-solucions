@@ -7,9 +7,8 @@ import java.io.InputStreamReader;
 
 public class RunProcessOutput {
     public static void main (String[] args) {
-        // String[] program = {"powershell", "echo", "Hello world!"};
-        // String[] program = {"powershell", "rm", "inexistent"};
-        String[] program = {"powershell", "ls", "~"};
+        String[] program = {"wsl", "echo", "Hello world!"};
+        // String[] program = {"wsl", "rm", "inexistent"};
         ProcessBuilder pb = new ProcessBuilder(program);
         try {
             Process process = pb.start();

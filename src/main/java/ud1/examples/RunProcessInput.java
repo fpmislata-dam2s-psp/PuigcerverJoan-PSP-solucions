@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 
 public class RunProcessInput {
     public static void main (String[] args) {
-        String[] program = {"powershell", "Sort-Object"};
+        String[] program = {"wsl", "tr", "a", "A"};
         ProcessBuilder pb = new ProcessBuilder(program);
         try {
             Process process = pb.start();
