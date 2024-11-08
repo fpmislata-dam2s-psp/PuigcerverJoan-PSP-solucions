@@ -9,11 +9,31 @@ public class PitStop {
         car.drive(50);
 
         List<Mechanic> mechanics = new ArrayList<>();
+
         mechanics.add(new RaiseMechanic(car));
-        mechanics.add(new RemoveTireMechanic(car, car.getFrontLeftTire()));
-        mechanics.add(new RemoveTireMechanic(car, car.getFrontRightTire()));
-        mechanics.add(new RemoveTireMechanic(car, car.getBackLeftTire()));
-        mechanics.add(new RemoveTireMechanic(car, car.getBackRightTire()));
+
+        mechanics.add(new StabilizeMechanic(car));
+        mechanics.add(new StabilizeMechanic(car));
+
+        // Front left tire
+        mechanics.add(new ScrewMechanic(car, car.getFrontLeftTirePlace()));
+        mechanics.add(new RemoveTireMechanic(car, car.getFrontLeftTirePlace()));
+        mechanics.add(new InstallTireMechanic(car, car.getFrontLeftTirePlace(), new Tire("newFrontLeftTire", false)));
+
+        // Front right tire
+        mechanics.add(new ScrewMechanic(car, car.getFrontRightTirePlace()));
+        mechanics.add(new RemoveTireMechanic(car, car.getFrontRightTirePlace()));
+        mechanics.add(new InstallTireMechanic(car, car.getFrontRightTirePlace(), new Tire("newFrontRightTire", false)));
+
+        // Back left tire
+        mechanics.add(new ScrewMechanic(car, car.getBackLeftTirePlace()));
+        mechanics.add(new RemoveTireMechanic(car, car.getBackLeftTirePlace()));
+        mechanics.add(new InstallTireMechanic(car, car.getBackLeftTirePlace(), new Tire("newBackLeftTire", false)));
+
+        // Back right tire
+        mechanics.add(new ScrewMechanic(car, car.getBackRightTirePlace()));
+        mechanics.add(new RemoveTireMechanic(car, car.getBackRightTirePlace()));
+        mechanics.add(new InstallTireMechanic(car, car.getBackRightTirePlace(), new Tire("newBackRightTire", false)));
 
         for(Mechanic m : mechanics)
             m.start();

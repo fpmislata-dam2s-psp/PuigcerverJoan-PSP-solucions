@@ -8,6 +8,7 @@ public class RaiseMechanic extends Mechanic {
     @Override
     public void run()  {
         try {
+            System.out.println("Waiting for raising the car...");
             this.car.raise();
             System.out.println("Car raised!");
             this.car.release();

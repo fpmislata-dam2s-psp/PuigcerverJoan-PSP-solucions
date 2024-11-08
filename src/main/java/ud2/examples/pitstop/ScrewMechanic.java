@@ -1,19 +1,19 @@
 package ud2.examples.pitstop;
 
 public class ScrewMechanic extends Mechanic {
-    private Tire tire;
+    private final TirePlace tirePlace;
 
-    public ScrewMechanic(Car car, Tire tire) {
+    public ScrewMechanic(Car car, TirePlace tirePlace) {
         super(car);
-        this.tire = tire;
+        this.tirePlace = tirePlace;
     }
 
     @Override
     public void run() {
         try {
-            this.car.unscrew(tire);
-            System.out.printf("Tire %s replaced.\n", tire);
-            this.car.screw(tire);
+            this.car.unscrew(tirePlace);
+            System.out.printf("Tire %s replaced.\n", tirePlace.getTire());
+            this.car.screw(tirePlace);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
