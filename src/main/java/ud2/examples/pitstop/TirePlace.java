@@ -7,11 +7,11 @@ public class TirePlace {
         this.tire = tire;
     }
 
-    public Tire getTire() {
+    public synchronized Tire getTire() {
         return tire;
     }
 
-    public void setTire(Tire tire) {
+    public synchronized void setTire(Tire tire) {
         this.tire = tire;
     }
 }

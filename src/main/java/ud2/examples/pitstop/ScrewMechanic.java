@@ -12,8 +12,9 @@ public class ScrewMechanic extends Mechanic {
     public void run() {
         try {
             this.car.unscrew(tirePlace);
-            System.out.printf("Tire %s replaced.\n", tirePlace.getTire());
+            System.out.printf("Tire %s unscrewed.\n", tirePlace.getTire());
             this.car.screw(tirePlace);
+            System.out.printf("Tire %s screwed.\n", tirePlace.getTire());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -60,16 +60,16 @@ public class Car {
     public void hold() throws InterruptedException {
         Thread.sleep(250);
 
-        holding += 1;
 
         synchronized (this) {
+            holding += 1;
             notifyAll();
         }
     }
 
     public void letgo() throws InterruptedException {
         synchronized (this) {
-            while(!raised && !allTiresNewAndScrewed()) wait();
+            while(!(!raised && allTiresNewAndScrewed())) wait();
         }
 
         Thread.sleep(250);
@@ -137,10 +137,10 @@ public class Car {
 
         Thread.sleep(200);
         Tire oldTire = tp.getTire();
-        tires.remove(oldTire);
         tp.setTire(null);
 
         synchronized (this) {
+            tires.remove(oldTire);
             notifyAll();
         }
 
@@ -153,20 +153,21 @@ public class Car {
         }
 
         Thread.sleep(200);
-        tires.add(t);
         tp.setTire(t);
 
         synchronized (this) {
+            tires.add(t);
             notifyAll();
         }
     }
 
     public void screw(TirePlace tp) throws InterruptedException {
         synchronized (this) {
-            while(tp.getTire().getUsedPercentage() < 100) wait();
+            while(tp.getTire() == null || tp.getTire().getUsedPercentage() < 100) wait();
         }
 
         Thread.sleep(100);
+
         tp.getTire().setScrewed(true);
 
         synchronized (this) {
