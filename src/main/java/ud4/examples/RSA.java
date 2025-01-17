@@ -1,6 +1,9 @@
 package ud4.examples;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -28,40 +31,30 @@ public class RSA {
         return keys;
     }
 
-    public static String encrypt(PublicKey key, String str){
-        try {
-            // Decode the UTF-8 String into byte[]
-            byte[] data = str.getBytes(StandardCharsets.UTF_8);
-            // Encrypt the byte[] data
-            byte[] encrypted = encrypt(key, data);
-            // Encode the encrypted data into base64
-            return Base64.getEncoder().encodeToString(encrypted);
-        } catch (Exception ex){
-            System.err.println("Error xifrant les dades: " + ex);
-        }
-        return null;
+    public static String encrypt(PublicKey key, String str) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        // Decode the UTF-8 String into byte[]
+        byte[] data = str.getBytes(StandardCharsets.UTF_8);
+        // Encrypt the byte[] data
+        byte[] encrypted = encrypt(key, data);
+        // Encode the encrypted data into base64
+        return Base64.getEncoder().encodeToString(encrypted);
     }
-    public static String decrypt(PrivateKey key, String str){
-        try {
-            // Decodifiquem les dades xifrades en base64 a byte[]
-            byte[] data = Base64.getDecoder().decode(str);
-            // Desencriptem les dades
-            byte[] decrypted = decrypt(key, data);
-            // Codifiquem les dades desencriptades a String
-            return new String(decrypted);
-        } catch (Exception ex){
-            System.err.println("Error desxifrant les dades: " + ex);
-        }
-        return null;
+    public static String decrypt(PrivateKey key, String str) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        // Decodifiquem les dades xifrades en base64 a byte[]
+        byte[] data = Base64.getDecoder().decode(str);
+        // Desencriptem les dades
+        byte[] decrypted = decrypt(key, data);
+        // Codifiquem les dades desencriptades a String
+        return new String(decrypted);
     }
 
-    public static byte[] encrypt(PublicKey key, byte[] data) throws Exception {
+    public static byte[] encrypt(PublicKey key, byte[] data) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return rsa(key, data, Cipher.ENCRYPT_MODE);
     }
-    public static byte[] decrypt(PrivateKey key, byte[] data) throws Exception {
+    public static byte[] decrypt(PrivateKey key, byte[] data) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return rsa(key, data, Cipher.DECRYPT_MODE);
     }
-    private static byte[] rsa(Key key, byte[] data, int opmode) throws Exception {
+    private static byte[] rsa(Key key, byte[] data, int opmode) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(opmode, key);
         return cipher.doFinal(data);
