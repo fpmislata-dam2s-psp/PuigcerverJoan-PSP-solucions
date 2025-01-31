@@ -1,6 +1,7 @@
 package ud4.exercises;
 
 import ud4.examples.CertificateUtils;
+import ud4.examples.Config;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 public class ShowCertificate {
     private final KeyStore keyStore;
@@ -30,8 +32,10 @@ public class ShowCertificate {
 
     public static void main(String[] args) {
         try{
-            String keyStorePath = "files/ud4/exercises_certificate.jks";
-            String keyStorePass = "654321";
+            Properties config = Config.getConfig("application.properties");
+            String keyStorePath = config.getProperty("ud4.exercises.keystore.path");
+            String keyStorePass = config.getProperty("ud4.exercises.keystore.passwd");
+
             ShowCertificate sc = new ShowCertificate(keyStorePath, keyStorePass);
             sc.showCertificates();
         } catch (FileNotFoundException e) {
