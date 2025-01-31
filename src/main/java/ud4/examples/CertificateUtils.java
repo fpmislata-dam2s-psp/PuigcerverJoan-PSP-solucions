@@ -2,6 +2,7 @@ package ud4.examples;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.Certificate;
@@ -16,10 +17,11 @@ public class CertificateUtils {
     public static KeyStore loadKeyStore(String ksFile, String ksPwd) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         KeyStore ks = KeyStore.getInstance("JKS");
         File f = new File (ksFile);
-        if (f.isFile()) {
-            FileInputStream in = new FileInputStream (f);
-            ks.load(in, ksPwd.toCharArray());
-        }
+        if (!f.isFile())
+            throw new FileNotFoundException();
+
+        FileInputStream in = new FileInputStream (f);
+        ks.load(in, ksPwd.toCharArray());
         return ks;
     }
 
