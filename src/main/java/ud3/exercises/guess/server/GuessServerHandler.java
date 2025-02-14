@@ -17,6 +17,7 @@ public class GuessServerHandler extends Thread {
     private final ObjectOutputStream out;
 
     private int n;
+    private int counter;
 
     public GuessServerHandler(Socket socket) throws IOException {
         this.socket = socket;
@@ -48,20 +49,19 @@ public class GuessServerHandler extends Thread {
     @Override
     public void run() {
         try {
-            // Generar nombre aleatòri entre 0 i 1000
-            this.n = ThreadLocalRandom.current().nextInt(0, 1000);
-
-            // Enviar READY al client
-            GuessMessage message = new GuessMessage(GuessMessageType.READY);
-            sendMessage(message);
-
-            boolean correct = false;
             GuessMessage clientMessage;
-            while ((clientMessage = receiveMessage()) != null && !correct){
-                if (clientMessage.getType() == GuessMessageType.GUESS) {
-                    correct = processGuess(clientMessage);
-                } else {
-                    System.err.println("Invalid request.");
+            while ((clientMessage = receiveMessage()) != null){
+                switch (clientMessage.getType()){
+                    case GUESS -> {
+                        processGuess(clientMessage);
+                    }
+                    case GENERATE_NUMBER -> {
+                        this.generateNumber();
+                        this.sendReady();
+                    }
+                    default -> {
+                        System.err.println("Invalid request.");
+                    }
                 }
             }
 
@@ -74,24 +74,41 @@ public class GuessServerHandler extends Thread {
         }
     }
 
-    private boolean processGuess(GuessMessage message) throws IOException {
+    private void processGuess(GuessMessage message) throws IOException {
         int guessedN = message.getN();
+        this.counter++;
 
-        boolean correct = false;
+        if (this.counter >= 2) {
+            GuessMessage response = new GuessMessage(GuessMessageType.TOO_MANY_ATTEMPTS, this.n);
+            this.sendMessage(response);
+        } else
+            this.checkIfGuessIsCorrect(guessedN);
+    }
+
+    private void checkIfGuessIsCorrect(int n) throws IOException {
         GuessMessageType type;
-        if (guessedN < 0 || guessedN > 1000)
+        if (n < 0 || n > 1000)
             type = GuessMessageType.INVALID;
-        else if(guessedN == this.n) {
+        else if(n == this.n) {
             type = GuessMessageType.CORRECT;
-            correct = true;
-        } else if (guessedN > this.n)
+        } else if (n > this.n)
             type = GuessMessageType.TOO_HIGH;
         else
             type = GuessMessageType.TOO_LOW;
 
         GuessMessage response = new GuessMessage(type);
         sendMessage(response);
+    }
 
-        return correct;
+    private void generateNumber(){
+        // Generar nombre aleatòri entre 0 i 1000
+        this.n = ThreadLocalRandom.current().nextInt(0, 1000);
+        this.counter = 0;
+    }
+
+    private void sendReady() throws IOException {
+        // Enviar READY al client
+        GuessMessage message = new GuessMessage(GuessMessageType.READY);
+        sendMessage(message);
     }
 }

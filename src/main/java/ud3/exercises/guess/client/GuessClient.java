@@ -18,6 +18,9 @@ public class GuessClient {
     private final ObjectOutputStream out;
     private final Scanner kbd;
 
+    private boolean correct;
+    private boolean attemptsLeft;
+
     public GuessClient(String host, int port) throws IOException {
         socket = new Socket(host, port);
         out = new ObjectOutputStream(socket.getOutputStream());
@@ -37,13 +40,25 @@ public class GuessClient {
     }
 
     public void play() throws IOException, ClassNotFoundException {
-        waitServerIsReady();
+        boolean keepPlaying = true;
+        while(keepPlaying){
+            this.generateNumber();
+            this.waitServerIsReady();
 
-        boolean correct = false;
-        while (!correct){
-            makeGuess();
-            correct = processResponse();
+            this.correct = false;
+            this.attemptsLeft = true;
+            while (!correct && this.attemptsLeft){
+                this.makeGuess();
+                this.processResponse();
+            }
+
+            keepPlaying = this.askUserKeepPlaying();
         }
+    }
+
+    private void generateNumber() throws IOException {
+        GuessMessage generateNumberMessage = new GuessMessage(GuessMessageType.GENERATE_NUMBER);
+        this.sendMessage(generateNumberMessage);
     }
 
     private void waitServerIsReady() throws IOException, ClassNotFoundException {
@@ -58,24 +73,36 @@ public class GuessClient {
     private void makeGuess() throws IOException {
         System.out.println("Introdueix un nombre del 1 al 1000:");
         int n = kbd.nextInt();
+        kbd.nextLine();
 
         GuessMessage message = new GuessMessage(GuessMessageType.GUESS, n);
         sendMessage(message);
     }
 
-    private boolean processResponse() throws IOException, ClassNotFoundException {
+    private void processResponse() throws IOException, ClassNotFoundException {
         GuessMessage message = receiveMessage();
         if (message.getType() == GuessMessageType.CORRECT) {
             System.out.println("Correcte!");
-            return true;
+            this.correct = true;
         } else if (message.getType() == GuessMessageType.TOO_LOW)
             System.out.println("Massa baix");
         else if (message.getType() == GuessMessageType.TOO_HIGH)
             System.out.println("Massa alt");
         else if (message.getType() == GuessMessageType.INVALID)
             System.out.println("Nombre invàlid");
+        else if (message.getType() == GuessMessageType.TOO_MANY_ATTEMPTS){
+            this.attemptsLeft = false;
+            int n = message.getN();
+            System.out.println("Has superat el nombre màxim d'intents.");
+            System.out.printf("La resposta era: %d\n", n);
+        }
+    }
 
-        return false;
+    private boolean askUserKeepPlaying(){
+        System.out.println("Vols jugar de nou? (s/N)");
+        String option = kbd.nextLine();
+
+        return option.equalsIgnoreCase("s");
     }
 
     public static void main(String[] args) {
