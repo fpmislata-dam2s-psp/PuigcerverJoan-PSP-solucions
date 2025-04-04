@@ -10,6 +10,8 @@ public class CustomerThread extends Thread {
 
     public CustomerThread(String name, CopyShop shop) {
         this.name = name;
+        super.setName(name);
+
         this.documents = new ArrayList<>();
         this.shop = shop;
     }
@@ -22,19 +24,28 @@ public class CustomerThread extends Thread {
     }
 
     @Override
+    public String toString() {
+        return "CustomerThread{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
     public void run() {
         try {
-            shop.getSemaphore().acquire();
+            System.out.printf("%s vol imprimir documents\n", this.name);
             Printer printer = shop.getFreePrinter();
             System.out.printf("%s ha obtingut l'impresora: %s\n", this.name, printer.getModel());
             for (Document d : documents) {
                 printer.printDocument(d);
             }
-            System.out.printf("%s ha alliberat l'impresora: %s\n", this.name, printer.getModel());
+            System.out.printf("%s ha acabat d'imprimir documents\n", this.name);
             shop.releasePrinter(printer);
-            shop.getSemaphore().release();
+            System.out.printf("%s ha alliberat l'impresora: %s\n", this.name, printer.getModel());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+
     }
 }

@@ -6,9 +6,9 @@ import java.util.concurrent.Semaphore;
 
 public class CopyShop {
 
-    private List<Printer> freePrinters;
-    private List<Printer> usedPrinters;
-    private Semaphore semaphore;
+    private final List<Printer> freePrinters;
+    private final List<Printer> usedPrinters;
+    private final Semaphore semaphore;
 
     public CopyShop() {
         freePrinters = new ArrayList<>();
@@ -21,18 +21,20 @@ public class CopyShop {
         semaphore = new Semaphore(freePrinters.size());
     }
 
-    public Semaphore getSemaphore() {
-        return semaphore;
+    public Printer getFreePrinter() throws InterruptedException {
+        this.semaphore.acquire();
+        synchronized (this){
+            Printer p = freePrinters.removeFirst();
+            usedPrinters.add(p);
+            return p;
+        }
     }
-
-    public synchronized Printer getFreePrinter(){
-        Printer p = freePrinters.remove(0);
-        usedPrinters.add(p);
-        return p;
-    }
-    public synchronized void releasePrinter(Printer p){
-        freePrinters.add(p);
-        usedPrinters.remove(p);
+    public void releasePrinter(Printer p){
+        synchronized (this){
+            freePrinters.add(p);
+            usedPrinters.remove(p);
+        }
+        this.semaphore.release();
     }
 
     public static void main(String[] args) {
