@@ -4,6 +4,7 @@ import ud4.examples.CertificateUtils;
 import ud4.examples.Config;
 import ud4.exercises.jsse.signed.models.SignedMessage;
 
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,8 +12,6 @@ import java.net.Socket;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -35,7 +34,9 @@ public class SignedClient {
 
         System.setProperty("javax.net.ssl.trustStore", trustStorePath);
         System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
-        this.socket = new Socket(host, port);
+        SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        this.socket = sslsocketfactory.createSocket(host, port);
+
         this.objOut = new ObjectOutputStream(socket.getOutputStream());
         this.objIn = new ObjectInputStream(socket.getInputStream());
 
@@ -44,8 +45,6 @@ public class SignedClient {
 
     public PublicKey loadServerPublicKey(String trustStorePath, String trustStorePassword, String serverAlias) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
         KeyStore keyStore = CertificateUtils.loadKeyStore(trustStorePath, trustStorePassword);
-        List<String> aliases = Collections.list(keyStore.aliases());
-        System.out.println(aliases);
         Certificate cert = keyStore.getCertificate(serverAlias);
         return cert.getPublicKey();
     }
@@ -53,6 +52,15 @@ public class SignedClient {
     private void sendText(String text) throws IOException {
         SignedMessage message = new SignedMessage(text, "");
         this.objOut.writeObject(message);
+    }
+
+    private void handleResponse(SignedMessage response) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        String text = response.message();
+        String signature = response.signature();
+        boolean valid = CertificateUtils.verifySignature(this.serverPublicKey, text, signature);
+        System.out.printf("Received: %s\n", text);
+        System.out.printf("Signature: %s\n", signature);
+        System.out.printf("Is valid?: %s\n", valid ? "yes" : "no");
     }
 
     public void run() throws IOException, ClassNotFoundException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
@@ -64,12 +72,7 @@ public class SignedClient {
             this.sendText(line);
 
             SignedMessage response = (SignedMessage) objIn.readObject();
-            String text = response.message();
-            String signature = response.signature();
-            boolean valid = CertificateUtils.verifySignature(this.serverPublicKey, text, signature);
-            System.out.printf("Received: %s\n", text);
-            System.out.printf("Signature: %s\n", signature);
-            System.out.printf("Is valid?: %s\n", valid ? "yes" : "no");
+            handleResponse(response);
         }
     }
 

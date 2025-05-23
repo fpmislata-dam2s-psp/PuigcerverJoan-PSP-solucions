@@ -3,6 +3,7 @@ package ud4.exercises.jsse.signed.server;
 import ud4.examples.CertificateUtils;
 import ud4.examples.Config;
 
+import javax.net.ssl.SSLServerSocketFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,7 +28,8 @@ public class SignedServer {
 
         System.setProperty("javax.net.ssl.keyStore", keyStorePath);
         System.setProperty("javax.net.ssl.keyStorePassword", keyStorePassword);
-        server = new ServerSocket(port);
+        SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+        this.server = sslserversocketfactory.createServerSocket(port);
         clients = new ArrayList<>();
         running = true;
 
