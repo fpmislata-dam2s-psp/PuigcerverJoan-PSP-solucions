@@ -30,12 +30,24 @@ public class CertificateUtils {
         return cert.getSubjectX500Principal().getName();
     }
 
-    public static String signText(PrivateKey privateKey, String text) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature signature = Signature.getInstance("SHA256withRSA");
-        signature.initSign(privateKey);
-        signature.update(text.getBytes());
-        byte[] signatureBytes = signature.sign();
-        return Base64.getEncoder().encodeToString(signatureBytes);
+    /**
+     *
+     * @param privateKey Clau privada
+     * @param text Text a signar
+     * @return Signatura en Base64
+     * @throws InvalidKeyException if the key is invalid
+     */
+    public static String signText(PrivateKey privateKey, String text) throws InvalidKeyException {
+        try {
+            Signature signature = Signature.getInstance("SHA256withRSA");
+            signature.initSign(privateKey);
+            signature.update(text.getBytes());
+            byte[] signatureBytes = signature.sign();
+            return Base64.getEncoder().encodeToString(signatureBytes);
+        } catch (NoSuchAlgorithmException | SignatureException e) {
+            // Aquests errors no haurien d'apareixer mai
+            throw new RuntimeException(e);
+        }
     }
 
     public static boolean verifySignature(PublicKey publicKey, String text, String signature) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
